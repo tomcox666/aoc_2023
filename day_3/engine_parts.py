@@ -30,14 +30,37 @@ def calculate_part_number_sum(engine_matrix, file):
                 part_number_sum.append(float(number[1].group(0)))
     return sum(part_number_sum)
 
+def calculate_gear_ratios(engine_matrix, file):
+    numbers = []
+    gears = []
+    with open(file, 'r')as f:
+        lines = f.readlines()
+        for i in range(len(lines)):
+            numbers.extend(map(lambda x: [float(x.group(0)), max(i-1, 0), max(x.span()[0]-1, 0), min(i+1, engine_matrix.shape[0]), min(x.span()[1], engine_matrix.shape[1])], re.finditer(r"[0-9]+", lines[i])))
+            gears.extend(map(lambda x: (i, x.span()[0]), re.finditer(r"(\*)", lines[i])))
+            for j in range(len(lines[0].replace("\n", ""))):
+                engine_matrix[i, j] = lines[i].replace("\n", "")[j]
+        ratio_sum = 0
+        for gear in gears:
+            matches, gear_ratio = 0, 1
+            for number in numbers:
+                if number[1] <= gear[0] <= number[3] and number[2] <= gear[1] <= number[4]:
+                    matches += 1
+                    gear_ratio *= number[0]
+            if matches >= 2: ratio_sum += gear_ratio
+    return ratio_sum
+
+
 def main(file):
     with open(file, 'r') as f:
         engine_schematic = f.read()
 
     engine_matrix = parse_engine_schematic(engine_schematic)
     part_number_sum = calculate_part_number_sum(engine_matrix, file)
+    gear_ratio_sum = calculate_gear_ratios(engine_matrix, file)
 
-    print(f"Sum of part numbers: {part_number_sum}")
+    print(f"Sum of part numbers: {int(part_number_sum)}")
+    print(f"Sum of gear ratios: {int(gear_ratio_sum)}")
 
 if __name__ == "__main__":
     file = "puzzle_input.txt"
