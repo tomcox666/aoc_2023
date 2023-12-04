@@ -6,18 +6,12 @@ def calculate_matches(winning_numbers, your_numbers):
             winning_numbers.remove(num)
     return matches
 
-def get_numbers_from_card(card):
-    winning_numbers, your_numbers = (card.split(':', 1)[1].strip()).split('|')
-    winning_numbers = list(map(int, winning_numbers.split()))
-    your_numbers = list(map(int, your_numbers.split()))
-
-    return winning_numbers, your_numbers
-
-
 def calculate_total_points(cards):
     total_points = 0
     for card in cards:
-        winning_numbers, your_numbers = get_numbers_from_card(card)
+        winning_numbers, your_numbers = (card.split(':', 1)[1].strip()).split('|')
+        winning_numbers = list(map(int, winning_numbers.split()))
+        your_numbers = list(map(int, your_numbers.split()))
         points = calculate_matches(winning_numbers.copy(), your_numbers)
         total_points += 2 ** (points - 1) if points > 0 else 0
     return total_points
