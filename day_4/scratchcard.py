@@ -9,7 +9,7 @@ def calculate_points(winning_numbers, your_numbers):
 def calculate_total_points(cards):
     total_points = 0
     for card in cards:
-        winning_numbers, your_numbers = card.split('|')
+        winning_numbers, your_numbers = (card.split(':', 1)[1].strip()).split('|')
         winning_numbers = list(map(int, winning_numbers.split()))
         your_numbers = list(map(int, your_numbers.split()))
         points = calculate_points(winning_numbers.copy(), your_numbers)
@@ -26,4 +26,4 @@ def main(file):
 if __name__ == "__main__":
     file = "puzzle_input.txt"
     tst_file = "tst_puzzle_input.txt"
-    main(tst_file)
+    main(file)
