@@ -1,19 +1,36 @@
 class Hand:
-    def __init__(self, hand: str, bid: int, order=list("AKQJT98765432")):
+    def __init__(self, hand: str, bid: int, joker=False, order=list("AKQJT98765432")):
         self.bid = bid
         self.hand = hand
-        self.order = order
-
+        self.joker = joker
+        self.order = "AKQT98765432J" if joker else "AKQJT98765432"
         self.strength, self.count = self.type()
 
     def type(self):
         strength = 0
         cards = {}
 
-        for card in self.hand:
-            if card not in cards:
-                cards[card] = 0
-            cards[card] += 1
+        if not self.joker:
+            for card in self.hand:
+                if card not in cards:
+                    cards[card] = 0
+                cards[card] += 1
+        else:
+            jokers = 0
+            for card in self.hand:
+                if card == "J":
+                    jokers += 1
+                    continue
+                if card not in cards:
+                    cards[card] = 0
+                cards[card] += 1
+            if (jokers > 0) and (cards != {}):
+                maxnum = max(cards.values())
+                for k, v in cards.items():
+                    if v == maxnum:
+                        cards[k] += jokers
+            elif jokers > 0:
+                cards["J"] = jokers
 
         match len(cards):
             case 1:
@@ -75,9 +92,10 @@ class Hand:
     def __repr__(self):
         return self.__str__()
 
-
-if __name__ == "__main__":
+def main():
     cards = []
+    jcards = []
+
     with open("puzzle_input.txt", "r", encoding="utf8") as f:
         for line in f:
             line = line.strip()
@@ -87,7 +105,9 @@ if __name__ == "__main__":
             hand, bid = line.split()
 
             cards.append(Hand(hand.strip(), int(bid.strip())))
+            jcards.append(Hand(hand.strip(), int(bid.strip()), True))
 
+    # Part One
     res = 0
     i = 1
     prev = None
@@ -98,3 +118,18 @@ if __name__ == "__main__":
         prev = hand
 
     print(f"Part 1: {res}")
+
+    # Part Two
+    res = 0
+    i = 1
+    prev = None
+    for hand in sorted(jcards):
+        res += i * hand.bid
+        if (prev is None) or (prev != hand):
+            i += 1
+        prev = hand
+
+    print(f"Part 2: {res}")
+
+if __name__ == "__main__":
+    main()
