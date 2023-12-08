@@ -39,7 +39,7 @@ def read_conversion_maps(file):
     return maps
 
 if __name__ == "__main__":
-    input_file = "puzzle_input.txt"
+    input_file = "tst_puzzle_input.txt"
 
     with open(input_file, 'r') as f:
         input_data = f.read()
