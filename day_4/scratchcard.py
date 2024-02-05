@@ -9,11 +9,14 @@ def calculate_matches(winning_numbers, your_numbers):
 def calculate_total_points(cards):
     total_points = 0
     for card in cards:
-        winning_numbers, your_numbers = (card.split(':', 1)[1].strip()).split('|')
-        winning_numbers = list(map(int, winning_numbers.split()))
-        your_numbers = list(map(int, your_numbers.split()))
-        points = calculate_matches(winning_numbers.copy(), your_numbers)
-        total_points += 2 ** (points - 1) if points > 0 else 0
+        if ':' not in card:
+            print("Invalid input format... skipping")
+        else:
+            winning_numbers, your_numbers = (card.split(':', 1)[1].strip()).split('|')
+            winning_numbers = list(map(int, winning_numbers.split()))
+            your_numbers = list(map(int, your_numbers.split()))
+            points = calculate_matches(winning_numbers.copy(), your_numbers)
+            total_points += 2 ** (points - 1) if points > 0 else 0
     return total_points
 
 def calculate_total_cards(cards):
@@ -32,12 +35,14 @@ def main(file):
         scratchcards = [line.strip() for line in f.readlines()]
 
     total_points = calculate_total_points(scratchcards)
-    total_cards = calculate_total_cards(scratchcards)
+    if total_points:
+        total_cards = calculate_total_cards(scratchcards)
 
-    print(f"Total points: {total_points}")
-    print(f"Total cards: {total_cards}")
+        print(f"Total points: {total_points}")
+        print(f"Total cards: {total_cards}")
 
 if __name__ == "__main__":
     file = "puzzle_input.txt"
     tst_file = "tst_puzzle_input.txt"
-    main(file)
+    tst_file_2 = "tst_puzzle_input_2.txt"
+    main(tst_file_2)

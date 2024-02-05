@@ -57,5 +57,5 @@ def main(file_path):
     print(f"Total sum of minimum cubes (part 2): {total_sum}")
 
 if __name__ == "__main__":
-    infile_path = 'puzzle_input.txt'
+    infile_path = 'tst_puzzle_input.txt'
     main(infile_path)
